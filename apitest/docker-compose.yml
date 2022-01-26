@@ -12,7 +12,7 @@ version: '3.4'
 services:
 
   loginbuddy-sidecar:
-    image: saschazegerman/loginbuddy:latest-sidecar
+    image: saschazegerman/loginbuddy-sidecar:latest
     restart: always
     ports:
       - "444:444"
