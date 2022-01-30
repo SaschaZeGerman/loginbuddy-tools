@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 public class Sidecar extends HttpServlet {
 
@@ -43,11 +44,10 @@ public class Sidecar extends HttpServlet {
         try {
             LoginbuddyResponse loginbuddyResponse = SidecarClient.getAuthResponse(query);
             /*
-              This is where many more details may be retrieved from Loginbuddy Response.
+              This is where many more details may be retrieved from Loginbuddys response.
              */
             String email = (String)loginbuddyResponse.getDetailsNormalized().get("email");
-            req.getSession().setAttribute("email", email);
-            resp.sendRedirect("/sample/welcome.jsp");
+            resp.sendRedirect(String.format("/welcome.jsp#email=%s", URLEncoder.encode(email, "UTF-8")));
         } catch (Exception e) {
             e.printStackTrace();
             resp.sendError(400, String.format("Something went wrong: %s", e.getMessage()));

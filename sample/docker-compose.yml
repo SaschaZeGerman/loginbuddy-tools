@@ -6,24 +6,38 @@ services:
 
   loginbuddy-sidecar:
     image: saschazegerman/loginbuddy-sidecar:latest
+    container_name: sidecar
     restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8001,suspend=n,server=y"
     volumes:
       - ./config/config.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/config.json
       - ./config/discovery.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/discovery.json
       - ./config/permissions.policy:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/permissions.policy
 
-  loginbuddy-demoserver:
+  demoserver.loginbuddy.net:
     image: saschazegerman/loginbuddy-demoserver:latest
+    container_name: demoserver
     restart: always
     ports:
-      - "8443:8443"
+      - "8080:80"
     environment:
-      - "HOSTNAME_LOGINBUDDY_DEMOSERVER=loginbuddy-demoserver"
-      - "SSL_PORT=8443"
+      - "SCHEME_LOGINBUDDY_DEMOSERVER=http"
+      - "PORT_LOGINBUDDY_DEMOSERVER=8080"
 
   loginbuddy-tools-sample:
     image: saschazegerman/loginbuddy-tools-sample:latest
+    container_name: sample
     restart: always
     ports:
       - "80:8080"
-      - "443:8443"
+      - "8000:8000"
+    environment:
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8000,suspend=n,server=y"
+
+networks:
+  default:
+    external: true
+    name: loginbuddy-sample

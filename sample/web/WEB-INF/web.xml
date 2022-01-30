@@ -77,26 +77,20 @@
 
     <servlet-mapping>
         <servlet-name>sidecar-login</servlet-name>
-        <url-pattern>/sample/login</url-pattern>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>sidecar-login</servlet-name>
-        <url-pattern>/sample/login/callback</url-pattern>
+        <url-pattern>/login/callback</url-pattern>
     </servlet-mapping>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>HTTPSOnly</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
 
     <mime-mapping>
         <extension>json</extension>
         <mime-type>application/json</mime-type>
     </mime-mapping>
+    
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>

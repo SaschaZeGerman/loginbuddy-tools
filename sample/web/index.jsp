@@ -10,7 +10,7 @@
         request.getSession().removeAttribute("email");
     }
 %>
-<h2>Sample project to show off Loginbuddy-Tools</h2>
+<h2>Sample project to demonstrate Loginbuddy-Tools</h2>
 <p>This simple project is meant to get anyone started using Loginbuddy and Loginbuddy-Tools</p>
 <p>After using and looking at the inside of this sample project it hopefully becomes apparent why these tools with Loginbuddy are useful
 to anyone who is developing an OAuth/ OpenID Connect enabled application.</p>
@@ -34,7 +34,7 @@ to anyone who is developing an OAuth/ OpenID Connect enabled application.</p>
 <hr/>
 <h3>Sequence Diagram</h3>
 <p>Below is the notation for a sequence diagram which can be used at <a href="https://websequencediagrams.com" target="_blank">websequencediagrams.com</a>. It is free and only required copy/paste in the browser:</p>
-<code>
+<pre>
     title Loginbuddy Sample\nSascha Preibisch, June 2021
 
     participant User as user
@@ -64,6 +64,6 @@ to anyone who is developing an OAuth/ OpenID Connect enabled application.</p>
     sidecar->client: loginbuddyResponse\nincludes all details
     client->client: extract desired details such as 'first name' or 'email'
     client->browser: 'Welcome John Smith (john.smith@example.com)'
-</code>
+    </pre>
 </body>
 </html>

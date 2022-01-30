@@ -51,3 +51,18 @@ LoginbuddyResponse provides these methods:
 ## Sample project
 
 To get started a sample web project is provided.
+
+### Building
+
+- `cd ./apitest`
+- `docker-compose up`
+- `../`
+- `make build_sample`
+- `cd ./apitest`
+- `ctrl + c`
+- `docker-compose down`
+- `cd ../sample`
+- `docker-compose up`
+- browser: `http://localhost`  // should end up with 'Welcome' message
+- `ctrl + c`
+- `docker-compose down`
