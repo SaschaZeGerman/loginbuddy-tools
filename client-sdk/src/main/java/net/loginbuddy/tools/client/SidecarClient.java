@@ -23,8 +23,14 @@ public class SidecarClient {
     private String loginbuddyCallbackUrl;
 
     private SidecarClient() {
-        loginbuddyInitUrl = "http://loginbuddy-sidecar:8044/sidecar/initialize";
-        loginbuddyCallbackUrl = "http://loginbuddy-sidecar:8044/sidecar/callback?%s";
+        String loginbuddylocation = System.getenv("LOGINBUDDY_SIDECAR_LOCATION");
+        if(loginbuddylocation != null) {
+            loginbuddyInitUrl = loginbuddylocation.concat("/sidecar/initialize");
+            loginbuddyCallbackUrl = loginbuddylocation.concat("/sidecar/callback?%s");
+            LOGGER.info(String.format("ClientSDK connects to this location: %s", loginbuddylocation));
+        } else {
+            LOGGER.severe("ClientSDK cannot be initialized, missing environment variable LOGINBUDDY_SIDECAR_LOCATION");
+        }
     }
 
     /**
@@ -69,7 +75,7 @@ public class SidecarClient {
         try {
             initAuthRequest.setEntity(new UrlEncodedFormEntity(authRequest.getParameters()));
 
-            // initialize the authorization code flow. Loginbuddy will return the authorizationUrl that is valid for the selected provider
+            // initialize the authorization flow. Loginbuddy will return the authorizationUrl that is valid for the selected provider
             HttpClient httpClient = HttpClientBuilder.create().build();
             initAuthResponse = httpClient.execute(initAuthRequest);
 

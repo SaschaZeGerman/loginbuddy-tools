@@ -9,9 +9,9 @@ import java.util.List;
 
 public class SidecarClientAuthRequest {
 
-    private SidecarClient client;
+    private final SidecarClient client;
 
-    private List<NameValuePair> formParameters;
+    private final List<NameValuePair> formParameters;
 
     public SidecarClientAuthRequest(SidecarClient client, String provider) {
         this.client = client;
@@ -66,6 +66,20 @@ public class SidecarClientAuthRequest {
         return this;
     }
 
+    public SidecarClientAuthRequest setDynamicProvider(String issuer) {
+        return setDynamicProvider(issuer, null);
+    }
+
+    public SidecarClientAuthRequest setDynamicProvider(String issuer, String discoveryUrl) {
+        formParameters.add(new BasicNameValuePair("issuer", issuer));
+        if(discoveryUrl != null) {
+            formParameters.add(new BasicNameValuePair("discovery_url", discoveryUrl));
+        }
+        formParameters.add(new BasicNameValuePair("provider", "")); // needs to be empty to enable dynamic registration
+        formParameters.add(new BasicNameValuePair("accept_dynamic_provider", "true"));
+        return this;
+    }
+
     /**
      * Optional: This value will be forwarded to the given provider as is. This parameter is taken out of the OpenID Connect core specification.
      * Loginbuddy will not include this parameter if it is not set.
@@ -111,6 +125,17 @@ public class SidecarClientAuthRequest {
      */
     public SidecarClientAuthRequest setSignedResponseAlgRS256() {
         formParameters.add(new BasicNameValuePair("signed_response_alg", "RS256"));
+        return this;
+    }
+
+    /**
+     * If set your client receives a JWT (signed by loginbuddy-sidecar) as response instead of a JSON document.
+     * The JWT will be signed using alg=ES256.
+     *
+     * @return
+     */
+    public SidecarClientAuthRequest setSignedResponseAlgES256() {
+        formParameters.add(new BasicNameValuePair("signed_response_alg", "ES256"));
         return this;
     }
 

@@ -3,6 +3,7 @@ package net.loginbuddy.tools.sample.login;
 import net.loginbuddy.tools.client.SidecarClient;
 import net.loginbuddy.tools.common.LoginbuddyResponse;
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
+import net.loginbuddy.tools.common.oidc.Prompt;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +26,13 @@ public class Sidecar extends HttpServlet {
                 Loginbuddy will do all necessary validations before generating and returning the authorizationUrl.
              */
             String provider = req.getParameter("provider");
-            String authUrl = SidecarClient.createAuthRequest(provider).build().getAuthorizationUrl();
+
+            String authUrl = SidecarClient.createAuthRequest(provider)
+                    .setObfuscateToken()
+                    .setPrompt(Prompt.LOGIN_CONSENT)
+                    .setDynamicProvider("https://server.loginbuddy.net")
+                    .build().getAuthorizationUrl();
+
             resp.sendRedirect(authUrl);
         } catch (LoginbuddyToolsException e) {
             e.printStackTrace();

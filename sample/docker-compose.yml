@@ -12,6 +12,7 @@ services:
       - "8001:8001"
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8001,suspend=n,server=y"
+      - "SUPPORT_OIDCDR=true"
     volumes:
       - ./config/config.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/config.json
       - ./config/discovery.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/discovery.json
@@ -36,6 +37,15 @@ services:
       - "8000:8000"
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8000,suspend=n,server=y"
+      - "LOGINBUDDY_SIDECAR_LOCATION=http://loginbuddy-sidecar:8044"
+
+  loginbuddy-oidcdr:
+    image: saschazegerman/loginbuddy-oidcdr:latest
+    restart: always
+    ports:
+      - "8002:8002"
+    environment:
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8002,suspend=n,server=y"
 
 networks:
   default:
