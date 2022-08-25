@@ -29,7 +29,10 @@ to anyone who is developing an OAuth/ OpenID Connect enabled application.</p>
 <p>After clicking the button the browser gets redirected to the demo provider. Login, grant the request and you will find yourself back here.</p>
 <hr/>
 <form action="login" method="POST" enctype="application/x-www-form-urlencoded">
-    <input type="submit" value="server_loginbuddy" name="provider" size="20">
+    <input type="submit" value="server_loginbuddy_dynamic" name="provider" size="20">
+    <br/>
+    <input type="text" value="" name="provider" size="20">
+    <input type="submit" value="" name="provider" size="20">
 </form>
 <hr/>
 <h3>Sequence Diagram</h3>

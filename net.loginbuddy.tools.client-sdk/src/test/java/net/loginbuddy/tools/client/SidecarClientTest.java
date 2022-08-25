@@ -1,6 +1,6 @@
 package net.loginbuddy.tools.client;
 
-import net.loginbuddy.tools.common.LoginbuddyResponse;
+import net.loginbuddy.tools.common.model.LoginbuddyResponse;
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +50,8 @@ public class SidecarClientTest {
                 Matcher actualState = Pattern.compile("state=([0-9a-z-]{36})").matcher(authUrl);
                 actualState.find();
                 authResponse = SidecarClient.getAuthResponse(String.format("code=acode&state=%s", actualState.group(1)));
-                authResponse.getOAuthResponse();
-                authResponse.getDetailsProvider();
-                authResponse.getDetailsLoginbuddy();
-                authResponse.getDetailsNormalized();
-                authResponse.getError();
-                assertEquals("invalid_request", authResponse.getError().get("error"));
+                assertNotNull(authResponse.getError());
+                assertEquals("invalid_request", authResponse.getError().getError());
             } catch (Exception e) {
                 fail(e.getMessage());
             }

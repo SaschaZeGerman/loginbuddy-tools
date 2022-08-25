@@ -1,4 +1,5 @@
-build_sample:
-	LOGINBUDDY_SIDECAR_LOCATION=http://loginbuddy-sidecar:8044
-	mvn clean package
-	docker build --no-cache --tag saschazegerman/loginbuddy-tools-sample:latest -f sample/Dockerfile ./sample
+build_all:
+	export LOGINBUDDY_SIDECAR_LOCATION=http://loginbuddy-sidecar:8044
+	#mvn clean install
+	mvn -Dmaven.test.skip=true clean install
+	docker build --no-cache --tag local/loginbuddy-tools-sample:latest -f sample/Dockerfile ./sample

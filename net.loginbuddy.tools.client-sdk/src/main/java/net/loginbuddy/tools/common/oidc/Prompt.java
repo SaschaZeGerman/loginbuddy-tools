@@ -11,7 +11,7 @@ public enum Prompt {
     CONSENT_SELECT_ACCOUNT("consent select_account"),
     SELECT_ACCOUNT("select_account");
 
-    private String prompt;
+    private final String prompt;
 
     Prompt(String prompt) {
         this.prompt = prompt;

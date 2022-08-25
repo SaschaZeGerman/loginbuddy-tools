@@ -1,4 +1,4 @@
-FROM tomcat:9.0
+FROM tomcat:jdk11-openjdk
 
 # We do not want to keep the default applications, remove them
 #
@@ -8,7 +8,7 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 #
 # Default loginbuddy services
 #
-COPY target/sample-1.0-SNAPSHOT/ /usr/local/tomcat/webapps/ROOT
+COPY target/sample-1.0.0/ /usr/local/tomcat/webapps/ROOT
 
 COPY docker-build/add-ons/server/server.xml /usr/local/tomcat/conf/server.xml
 COPY docker-build/add-ons/server/entrypoint.sh /opt/docker/entrypoint.sh

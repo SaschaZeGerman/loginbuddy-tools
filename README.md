@@ -5,7 +5,7 @@ of OAuth and OpenID Connect, it can still be a challenge to connect to Loginbudd
 
 For that reason, these tools include client-side code that hide the http layer by 99%. To explain what that means, below examples are provided.
 
-**NOTE**: All examples are meant to work with *loginbuddy-sidecar*. In that case the web server (servlet container) that implements the client is running in the same 
+**NOTE**: All examples are meant to work with *loginbuddy-sidecar*. In that case the web server that implements the client is running in the same 
 docker network as *loginbuddy-sidecar*.
 
 ## Initiating the authorization code flow
@@ -35,7 +35,7 @@ In either case Loginbuddy handles the response.
 Assuming the callback is *https://local.loginbuddy.net/callback*, this is the required implementation in the matching http servlets GET method:
 
 - `...` // request validations are handled here
-- `LoginbuddyResponse authResponse = SidecarClient.getAuthResponse(request.getQueryString());`  // Loginbuddy procsses the query string, exchanges a code for an access_token
+- `LoginbuddyResponse authResponse = SidecarClient.getAuthResponse(request.getQueryString());`  // Loginbuddy processes the query string, exchanges a code for an access_token
 
 That's it, the object *authResponse* contains everything your client needs! This means, it includes the issued access_token, the expanded content of the validated id_token, 
 the userinfo response.
@@ -44,7 +44,7 @@ LoginbuddyResponse provides these methods:
 
 - `authResponse.getError();`  // if this is not null, an error occured. This should be called first
 - `authResponse.getOAuthResponse();`  // a json object containing: access_token, refresh_token, id_token, scope, token_type, expires_in, all default OAuth/OpenID Connect response values
-- `authResponse.getDetailsProvider();`  // details about the choosen provider, including the /userinfo response and the content of the validated id_token
+- `authResponse.getDetailsProvider();`  // details about the chosen provider, including the /userinfo response and the content of the validated id_token
 - `authResponse.getDetailsLoginbuddy();`  // details about Loginbuddy itself
 - `authResponse.getDetailsNormalized();`  // the most important one, a json object that has the same structure for all providers!
 
@@ -57,7 +57,7 @@ To get started a sample web project is provided.
 - `cd ./apitest`
 - `docker-compose up`
 - `../`
-- `make build_sample`
+- `make build_all`
 - `cd ./apitest`
 - `ctrl + c`
 - `docker-compose down`

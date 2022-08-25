@@ -29,7 +29,7 @@ services:
       - "PORT_LOGINBUDDY_DEMOSERVER=8080"
 
   loginbuddy-tools-sample:
-    image: saschazegerman/loginbuddy-tools-sample:latest
+    image: local/loginbuddy-tools-sample:latest
     container_name: sample
     restart: always
     ports:
@@ -46,8 +46,3 @@ services:
       - "8002:8002"
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8002,suspend=n,server=y"
-
-networks:
-  default:
-    external: true
-    name: loginbuddy-sample

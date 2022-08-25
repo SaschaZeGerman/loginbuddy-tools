@@ -12,7 +12,7 @@
                 let email = location.href.substring(index + 7);
                 welcome.innerText = 'Welcome ' + decodeURIComponent(email) + '!';
             } else {
-                welcome.innerText = 'Welcome ... auhentication was successful, but something is wrong ... please check the logs!';
+                welcome.innerText = 'Welcome ... authentication was successful, but something is wrong ... please check the logs!';
             }
         }
     </script>

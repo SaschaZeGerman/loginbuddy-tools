@@ -24,7 +24,7 @@ services:
       - ./discovery.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/discovery.json
       - ./permissions.policy:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/permissions.policy
     environment:
-      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=8001,suspend=n,server=y \
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001 \
         -Dcom.sun.management.jmxremote \
         -Dcom.sun.management.jmxremote.authenticate=false \
         -Dcom.sun.management.jmxremote.ssl=false \
