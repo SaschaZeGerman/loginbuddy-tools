@@ -43,7 +43,7 @@ public class LoginbuddyResponse {
         if(providerResponse.get("error") != null) {
             return new ErrorResponse(
                     (String)providerResponse.get("error"),
-                    (String)providerResponse.get("error_decription")
+                    (String)providerResponse.get("error_description")
             );
         }
         return null;
@@ -51,5 +51,10 @@ public class LoginbuddyResponse {
 
     private JSONObject getDetails(String details) {
         return (JSONObject) providerResponse.get(details);
+    }
+
+    @Override
+    public String toString() {
+        return providerResponse.toJSONString();
     }
 }

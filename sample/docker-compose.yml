@@ -6,27 +6,24 @@ services:
 
   loginbuddy-sidecar:
     image: saschazegerman/loginbuddy-sidecar:latest
-    container_name: sidecar
+    container_name: loginbuddy-sidecar
+    hostname: loginbuddy-sidecar
     restart: always
-    ports:
-      - "8001:8001"
     environment:
-      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8001,suspend=n,server=y"
       - "SUPPORT_OIDCDR=true"
+      - "SSL_TRUSTED_SERVER=loginbuddy-demoserver:8443"
     volumes:
       - ./config/config.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/config.json
       - ./config/discovery.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/discovery.json
       - ./config/permissions.policy:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/permissions.policy
 
-  demoserver.loginbuddy.net:
+  loginbuddy-demoserver:
     image: saschazegerman/loginbuddy-demoserver:latest
     container_name: demoserver
     restart: always
+    hostname: demoserver.loginbuddy.net
     ports:
-      - "8080:80"
-    environment:
-      - "SCHEME_LOGINBUDDY_DEMOSERVER=http"
-      - "PORT_LOGINBUDDY_DEMOSERVER=8080"
+      - "8443:8443"
 
   loginbuddy-tools-sample:
     image: local/loginbuddy-tools-sample:latest
@@ -41,8 +38,5 @@ services:
 
   loginbuddy-oidcdr:
     image: saschazegerman/loginbuddy-oidcdr:latest
+    container_name: loginbuddy-oidcdr
     restart: always
-    ports:
-      - "8002:8002"
-    environment:
-      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8002,suspend=n,server=y"

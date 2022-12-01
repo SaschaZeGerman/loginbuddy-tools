@@ -15,7 +15,7 @@ public class LoginbuddyToolsException extends Exception {
 
     /**
      *
-     * @param message Follows this pattern: https://hostname:port/?error=anerror&error_decription=adescription
+     * @param message Follows this pattern: https://hostname:port/?error=anerror&error_description=adescription
      */
     public LoginbuddyToolsException(String message) {
         try {

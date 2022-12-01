@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class Sidecar extends HttpServlet {
 
@@ -65,7 +66,7 @@ public class Sidecar extends HttpServlet {
               This is where many more details may be retrieved from Loginbuddys response.
              */
             String email = (String)loginbuddyResponse.getNormalizedDetails().get("email");
-            resp.sendRedirect(String.format("/welcome.jsp#email=%s", URLEncoder.encode(email, "UTF-8")));
+            resp.sendRedirect(String.format("/welcome.jsp#email=%s", URLEncoder.encode(email, StandardCharsets.UTF_8)));
         } catch (Exception e) {
             e.printStackTrace();
             resp.sendError(400, String.format("Something went wrong: %s", e.getMessage()));
