@@ -1,7 +1,7 @@
 package net.loginbuddy.tools.client;
 
-import net.loginbuddy.tools.common.model.LoginbuddyResponse;
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
+import net.loginbuddy.tools.common.model.LoginbuddyResponse;
 import org.junit.Before;
 import org.junit.Test;
 

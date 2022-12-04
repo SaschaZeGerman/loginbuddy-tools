@@ -7,5 +7,4 @@
 //
 grant codeBase "file:${catalina.home}/webapps/ROOT/-" {
     permission java.net.SocketPermission "demoserver.loginbuddy.net", "connect,resolve";
-    permission java.lang.RuntimePermission "getenv.HAZELCAST";
 };

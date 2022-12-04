@@ -1,8 +1,7 @@
 package net.loginbuddy.tools.common.model;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class ErrorResponse {
 
@@ -23,15 +22,9 @@ public class ErrorResponse {
     }
 
     public String getUrlEncodedError() {
-        try {
-            return String.format("error=%s&error_description=%s",
-                    URLEncoder.encode(error, "UTF-8"),
-                    URLEncoder.encode(errorDescription, "UTF-8")
-            );
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            // should never happen
-            return null;
-        }
+        return String.format("error=%s&error_description=%s",
+                URLEncoder.encode(error, StandardCharsets.UTF_8),
+                URLEncoder.encode(errorDescription, StandardCharsets.UTF_8)
+        );
     }
 }

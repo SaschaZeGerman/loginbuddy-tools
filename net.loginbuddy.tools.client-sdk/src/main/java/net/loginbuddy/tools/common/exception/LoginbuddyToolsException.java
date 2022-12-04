@@ -1,6 +1,7 @@
 package net.loginbuddy.tools.common.exception;
 
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 public class LoginbuddyToolsException extends Exception {
@@ -19,8 +20,8 @@ public class LoginbuddyToolsException extends Exception {
      */
     public LoginbuddyToolsException(String message) {
         try {
-            error = URLDecoder.decode(message.split("[?]")[1].split("[&]")[0].split("[=]")[1], "UTF-8");
-            errorDescription = URLDecoder.decode(message.split("[?]")[1].split("[&]")[1].split("[=]")[1], "UTF-8");
+            error = URLDecoder.decode(message.split("[?]")[1].split("[&]")[0].split("[=]")[1], StandardCharsets.UTF_8);
+            errorDescription = URLDecoder.decode(message.split("[?]")[1].split("[&]")[1].split("[=]")[1], StandardCharsets.UTF_8);
         } catch(Exception e) {
             LOGGER.warning(e.getMessage());
             error = "unknown";
