@@ -1,0 +1,10 @@
+{
+  "clients": [
+  ],
+  "providers": [
+    {
+      "provider": "server_loginbuddy",
+      "template": "server_loginbuddy"
+    }
+  ]
+}
