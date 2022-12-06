@@ -2,12 +2,12 @@ package net.loginbuddy.tools.client;
 
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
 import net.loginbuddy.tools.common.oidc.Prompt;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class SidecarClientAuthRequestTest {
+
     private SidecarClientAuthRequest scar;
 
     @Test
@@ -47,11 +47,11 @@ public class SidecarClientAuthRequestTest {
         scar = SidecarClient.createAuthRequest("myProvider");
         try {
             scar.build().getAuthorizationUrl();
-            fail("No connection to loginbudyd-sidecar, should fail");
+            fail("No connection to loginbuddy-sidecar, should fail");
         } catch (LoginbuddyToolsException e) {
-            assertEquals("error_description", e.getErrorDescription());
-            assertEquals("error", e.getError());
-            assertTrue(e.getMessage(), true);
+            assertEquals("connection_failed", e.getError());
+            assertEquals("Connection refused", e.getErrorDescription());
+            assertEquals(-1, e.getHttpStatus());
         }
     }
 }

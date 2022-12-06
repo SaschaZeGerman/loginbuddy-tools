@@ -3,35 +3,23 @@ package net.loginbuddy.tools.common.exception;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class LoginbuddyToolsException extends Exception {
 
     private static final Logger LOGGER = Logger.getLogger(String.valueOf(LoginbuddyToolsException.class));
 
     private String error, errorDescription;
-
-    public LoginbuddyToolsException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     *
-     * @param message Follows this pattern: https://hostname:port/?error=anerror&error_description=adescription
-     */
-    public LoginbuddyToolsException(String message) {
-        try {
-            error = URLDecoder.decode(message.split("[?]")[1].split("[&]")[0].split("[=]")[1], StandardCharsets.UTF_8);
-            errorDescription = URLDecoder.decode(message.split("[?]")[1].split("[&]")[1].split("[=]")[1], StandardCharsets.UTF_8);
-        } catch(Exception e) {
-            LOGGER.warning(e.getMessage());
-            error = "unknown";
-            errorDescription="unknown error_description. Please check the logs";
-        }
-    }
+    private int httpStatus;
 
     public LoginbuddyToolsException(String error, String errorDescription) {
+        this(error, errorDescription, -1);
+    }
+
+    public LoginbuddyToolsException(String error, String errorDescription, int httpStatus) {
         this.error = error;
         this.errorDescription = errorDescription;
+        this.httpStatus = httpStatus;
     }
 
     @Override
@@ -45,5 +33,9 @@ public class LoginbuddyToolsException extends Exception {
 
     public String getErrorDescription() {
         return errorDescription;
+    }
+
+    public int getHttpStatus() {
+        return httpStatus;
     }
 }

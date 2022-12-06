@@ -15,13 +15,20 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SidecarClient {
 
     private static final Logger LOGGER = Logger.getLogger(String.valueOf(SidecarClient.class));
+
+    // http://localhost/?error={error}&error_description={errorDescription}
+    private static Pattern pErrorUrl = Pattern.compile("[?]error=([a-zA-Z0-9-_ ]{0,48})[&]error_description=([a-zA-Z0-9-_ ]{0,128})");
 
     private SidecarClientAuthRequest authRequest;
     private String loginbuddyInitUrl;
@@ -90,20 +97,25 @@ public class SidecarClient {
 
         } catch (Exception e) {
             LOGGER.warning(String.format("Loginbuddy could not be reached: %s", e.getMessage()));
-            throw new LoginbuddyToolsException(e.getMessage());
+            throw new LoginbuddyToolsException("connection_failed", e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
         }
 
         if (initAuthResponse.getStatusLine().getStatusCode() == 201) {
-            // the location header contains the authorizationUrl
-            // for taking a browser to the target provider the URL should be used as is
+            // the location header contains the authorizationUrl for taking a browser to the target provider
+            // the URL should be used as is
             return initAuthResponse.getHeaders("Location")[0].getValue();
         } else {
             // Error!
             // status=400 // or other than 201
             // Location=http://localhost/?error={error}&error_description={errorDescription}
-            String locationError = initAuthResponse.getHeaders("Location")[0].getValue();
-            LOGGER.warning(locationError);
-            throw new LoginbuddyToolsException(locationError);
+            String errorUrl = URLDecoder.decode(initAuthResponse.getHeaders("Location")[0].getValue(), StandardCharsets.UTF_8);
+            Matcher mErrorUrl = pErrorUrl.matcher(errorUrl);
+            int httpStatus = initAuthResponse.getStatusLine().getStatusCode();
+            if(mErrorUrl.find()) {
+                throw new LoginbuddyToolsException(mErrorUrl.group(1), mErrorUrl.group(2), httpStatus);
+            }
+            LOGGER.warning(errorUrl);
+            throw new LoginbuddyToolsException("invalid_Request", errorUrl, httpStatus);
         }
     }
 

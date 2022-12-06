@@ -17,7 +17,6 @@ services:
     ports:
       - "444:444"
       - "8044:8044"
-      - "8001:8001"
     volumes:
       - ./config.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/config.json
       - ./configTemplates.json:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/configTemplates.json
