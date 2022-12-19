@@ -31,8 +31,11 @@ public class SidecarClient {
     private static Pattern pErrorUrl = Pattern.compile("[?]error=([a-zA-Z0-9-_ ]{0,48})[&]error_description=([a-zA-Z0-9-_ ]{0,128})");
 
     private SidecarClientAuthRequest authRequest;
+    private SidecarClientAuthResponse authResponse;
     private String loginbuddyInitUrl;
     private String loginbuddyCallbackUrl;
+
+    private HttpClient httpClient;
 
     private SidecarClient() {
         try {
@@ -62,21 +65,37 @@ public class SidecarClient {
     }
 
     /**
+     * The URL query component as received from the provider. Usually this will be '?code=aCode&state=aState' or '?error=anError&error_description=anErrorDescription'.
+     * In either case it should be given to this method.
+     *
+     * @param queryString
+     * @return
+     */
+    public static SidecarClientAuthResponse createAuthResponse(String queryString) {
+        SidecarClient client = new SidecarClient();
+        client.authResponse = new SidecarClientAuthResponse(client, queryString);
+        return client.authResponse;
+    }
+
+    /**
      * This will return the providers oauth response and details that were added by Loginbuddy.
      *
-     * @param queryString The URL query component as received from the provider. Usually this will be '?code=aCode&state=aState' or '?error=anError&error_description=anErrorDescription'.
-     *                    In either case it should be given to this method.
      * @return
      * @throws Exception
      */
-    public static LoginbuddyResponse getAuthResponse(String queryString) throws Exception {
-        SidecarClient client = new SidecarClient();
-        HttpGet authResultRequest = new HttpGet(String.format(client.loginbuddyCallbackUrl, queryString));
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpResponse authResultResponse = httpClient.execute(authResultRequest);
-        String authResponseString = EntityUtils.toString(authResultResponse.getEntity());
-        return new LoginbuddyResponse((JSONObject) new JSONParser().parse(authResponseString));
+    public LoginbuddyResponse getAuthResponse() throws LoginbuddyToolsException {
+        HttpGet authResultRequest = new HttpGet(String.format(loginbuddyCallbackUrl, this));
+        HttpResponse authResultResponse = null;
+        try {
+            authResultResponse = getHttpClient().execute(authResultRequest);
+            String authResponseString = EntityUtils.toString(authResultResponse.getEntity());
+            return new LoginbuddyResponse(authResultResponse.getFirstHeader("X-State").getValue(), authResultResponse.getStatusLine().getStatusCode(), (JSONObject) new JSONParser().parse(authResponseString));
+        } catch(Exception e) {
+            throw new LoginbuddyToolsException("auth_response_error", e.getMessage(), authResultResponse == null ? 400 : authResultResponse.getStatusLine().getStatusCode());
+        }
     }
+
+
 
     /**
      * After creating a SidecarClientAuthRequest this method returns the authorization URL that can be used to initiate the authorization request with the provider.
@@ -92,8 +111,7 @@ public class SidecarClient {
             initAuthRequest.setEntity(new UrlEncodedFormEntity(authRequest.getParameters()));
 
             // initialize the authorization flow. Loginbuddy will return the authorizationUrl that is valid for the selected provider
-            HttpClient httpClient = HttpClientBuilder.create().build();
-            initAuthResponse = httpClient.execute(initAuthRequest);
+            initAuthResponse = getHttpClient().execute(initAuthRequest);
 
         } catch (Exception e) {
             LOGGER.warning(String.format("Loginbuddy could not be reached: %s", e.getMessage()));
@@ -117,6 +135,14 @@ public class SidecarClient {
             LOGGER.warning(errorUrl);
             throw new LoginbuddyToolsException("invalid_Request", errorUrl, httpStatus);
         }
+    }
+
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    private HttpClient getHttpClient() {
+        return httpClient == null ? HttpClientBuilder.create().build() : httpClient;
     }
 
 }
@@ -269,4 +295,36 @@ class SidecarClientAuthRequest {
         return this;
     }
 
+    public SidecarClientAuthRequest setHttpClient(HttpClient httpClient) {
+        this.client.setHttpClient(httpClient);
+        return this;
+    }
+}
+
+class SidecarClientAuthResponse {
+
+    private final SidecarClient client;
+
+    private String queryString;
+
+    /**
+     * Create a new AuthorizationRequest
+     *
+     * @param client   Must not be null
+     * @param queryString Must not be null
+     */
+    SidecarClientAuthResponse(SidecarClient client, String queryString) {
+        this.client = client;
+        this.queryString = queryString;
+
+    }
+
+    public SidecarClient build() {
+        return client;
+    }
+
+    public SidecarClientAuthResponse setHttpClient(HttpClient httpClient) {
+        this.client.setHttpClient(httpClient);
+        return this;
+    }
 }

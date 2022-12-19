@@ -1,9 +1,6 @@
 package net.loginbuddy.tools.common.exception;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 public class LoginbuddyToolsException extends Exception {
 

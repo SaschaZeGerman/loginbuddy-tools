@@ -47,13 +47,14 @@ public class LoginbuddyResponseTest {
         completeResponse.put("details_loginbuddy", loginbuddyDetails);
         completeResponse.put("details_normalized", normalizedDetails);
 
-        LoginbuddyResponse lr = new LoginbuddyResponse(completeResponse);
+        LoginbuddyResponse lr = new LoginbuddyResponse("teststate", 200, completeResponse);
 
         OAuthDetails od = lr.getOAuthDetails();
         assertEquals("an_access_token", od.getAccessToken());
         assertEquals("a_refresh_token", od.getRefreshToken());
         assertEquals("a_scope", od.getScope());
         assertEquals("an_id_token", od.getIdToken());
+        assertEquals("a_token_type", od.getTokenType());
         assertEquals(3600, od.getExpiresIn());
 
         LoginbuddyDetails ld = lr.getLoginbuddyDetails();
@@ -65,5 +66,8 @@ public class LoginbuddyResponseTest {
         JSONObject normalized = lr.getNormalizedDetails();
         assertEquals("mysub", normalized.get("sub"));
         assertEquals("myprovider", normalized.get("provider"));
+
+        assertEquals("teststate", lr.getState());
+        assertEquals(200, lr.getStatus());
     }
 }

@@ -1,0 +1,52 @@
+{
+  "access_token": "FAKE_31f01303-f931-4218-a98f-eb673b522bee",
+  "refresh_token": "FAKE_612b7a1f-f05e-4e3b-92df-b2d9d91d030f",
+  "details_provider": {
+    "id_token_payload": {
+      "sub": "asas@asas.com",
+      "aud": "clientIdForTestingPurposes",
+      "nbf": 1671424834,
+      "on_behalf_of": {
+        "aud": "62a19967-7a8a-46ed-ab80-f7327fdc9247",
+        "iss": "https://server.loginbuddy.net",
+        "nonce": "2c7964a1-62d2-4fb4-ad3d-dac90b556bec"
+      },
+      "iss": "https://latest.loginbuddy.net",
+      "exp": 1671425254,
+      "iat": 1671424954,
+      "nonce": "2c7964a1-62d2-4fb4-ad3d-dac90b556bec",
+      "jti": "jg8oZfr1STg7X1GHEBts9g"
+    },
+    "provider": "server_loginbuddy",
+    "userinfo": {
+      "sub": "asas@asas.com",
+      "email_verified": true,
+      "name": "Login Buddy",
+      "preferred_username": "asas@asas.com",
+      "given_name": "Login",
+      "family_name": "Buddy",
+      "email": "asas@asas.com"
+    }
+  },
+  "scope": "openid profile email",
+  "id_token": "eyJraWQiOiIxYzBlOTE3NS1mM2M3LTQwMDYtYWIyNS1mZjNhY2QzMzYzODIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhc2FzQGFzYXMuY29tIiwiYXVkIjoiY2xpZW50SWRGb3JUZXN0aW5nUHVycG9zZXMiLCJuYmYiOjE2NzE0MjQ4MzQsIm9uX2JlaGFsZl9vZiI6eyJhdWQiOiI2MmExOTk2Ny03YThhLTQ2ZWQtYWI4MC1mNzMyN2ZkYzkyNDciLCJpc3MiOiJodHRwczpcL1wvc2VydmVyLmxvZ2luYnVkZHkubmV0Iiwibm9uY2UiOiIyYzc5NjRhMS02MmQyLTRmYjQtYWQzZC1kYWM5MGI1NTZiZWMifSwiaXNzIjoiaHR0cHM6XC9cL2xhdGVzdC5sb2dpbmJ1ZGR5Lm5ldCIsImV4cCI6MTY3MTQyNTI1NCwiaWF0IjoxNjcxNDI0OTU0LCJub25jZSI6IjJjNzk2NGExLTYyZDItNGZiNC1hZDNkLWRhYzkwYjU1NmJlYyIsImp0aSI6ImpnOG9aZnIxU1RnN1gxR0hFQnRzOWcifQ.QNJCZ5KpAkddY_VTKqnbGfThOmk6vHnqFqbhWaaagXk8NyAOmk7CeeSZwMZbTBC-W-RMx5-veVmYJ434_eFpVmlfGpOP6z9U7ZEl821lNhViI0-qK2yuMK_RmgPAE4Ob9lK_yXYPnxRwzStSwoalxIBRlaQ62bsgbN-wwxsvY62DK30vAk5zPvVO7Qwx_QJZEv_X8xJHo8vYgHZbNYuBh4z4F08nlHVNqh4Tp7-dfLgwGegZEha04R8DiBN1XKNhdIS947LCD_VuC2zAvMqx0634A71mofPKB_q46OWwv4rFEXiW2kbpAIVMmBVi41RFrbx6VSVWXL8xlsH6ZpAoOw",
+  "token_type": "Bearer",
+  "details_loginbuddy": {
+    "aud": "clientIdForTestingPurposes",
+    "iss": "https://latest.loginbuddy.net",
+    "nonce": "2c7964a1-62d2-4fb4-ad3d-dac90b556bec",
+    "iat": 1671424953
+  },
+  "details_normalized": {
+    "sub": "asas@asas.com",
+    "email_verified": "true",
+    "provider": "server_loginbuddy",
+    "name": "Login Buddy",
+    "preferred_username": "asas@asas.com",
+    "given_name": "Login",
+    "family_name": "Buddy",
+    "picture": "",
+    "email": "asas@asas.com"
+  },
+  "expires_in": 3600
+}
