@@ -29,7 +29,7 @@ public class LoginbuddyResponse {
         response.setAccessToken((String) providerResponse.get("access_token"));
         response.setRefreshToken((String) providerResponse.get("refresh_token"));
         response.setScope((String) providerResponse.get("scope"));
-        response.setExpiresIn((Long)providerResponse.get("expires_in"));
+        response.setExpiresIn(Integer.parseInt(String.valueOf(providerResponse.get("expires_in"))));
         response.setTokenType((String) providerResponse.get("token_type"));
         response.setIdToken((String) providerResponse.get("id_token"));
         return response;
