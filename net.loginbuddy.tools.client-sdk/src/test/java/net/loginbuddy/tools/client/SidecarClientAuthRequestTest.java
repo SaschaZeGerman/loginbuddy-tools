@@ -1,5 +1,7 @@
 package net.loginbuddy.tools.client;
 
+import net.loginbuddy.tools.client.message.SidecarClientAuthRequest;
+import net.loginbuddy.tools.client.message.SidecarClientAuthResponse;
 import net.loginbuddy.tools.common.connection.SidecarHttpClient;
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
 import net.loginbuddy.tools.common.model.LoginbuddyResponse;
@@ -69,9 +71,9 @@ public class SidecarClientAuthRequestTest {
     }
 
     @Test
-    public void testSimulateCallback() {
+    public void testSimulateGetAuthResponse() {
         try {
-            SidecarClientAuthResponse resp = SidecarClient.createAuthResponse("?code=aCode&state=aState").setHttpClient(new SidecarHttpClient(HttpClientBuilder.create().build()));
+            SidecarClientAuthResponse resp = SidecarClient.createAuthResponse("code=aCode&state=aState").setHttpClient(new SidecarHttpClient(HttpClientBuilder.create().build()));
             LoginbuddyResponse lr = resp.build().getAuthResponse();
             assertEquals(200, lr.getStatus());
             assertEquals("FAKE_31f01303-f931-4218-a98f-eb673b522bee", lr.getOAuthDetails().getAccessToken());

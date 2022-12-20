@@ -34,7 +34,7 @@ public class SidecarHttpResponse extends BasicHttpResponse {
         bhe.setContentType("application/json");
         bhe.setContentEncoding("UTF-8");
         try {
-            bhe.setContent(new FileInputStream("src/main/resources/testResponse.json"));
+            bhe.setContent(new FileInputStream("src/test/resources/testResponse.json"));
             return bhe;
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

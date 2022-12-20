@@ -6,12 +6,12 @@ public class LoginbuddyResponse {
 
     private String state;
     private int status;
-    private final JSONObject providerResponse;
+    private final JSONObject completeResponse;
 
-    public LoginbuddyResponse(String state, int status, JSONObject providerResponse) {
+    public LoginbuddyResponse(String state, int status, JSONObject completeResponse) {
         this.state = state;
         this.status = status;
-        this.providerResponse = providerResponse;
+        this.completeResponse = completeResponse;
     }
 
     public LoginbuddyDetails getLoginbuddyDetails() {
@@ -26,17 +26,19 @@ public class LoginbuddyResponse {
 
     public OAuthDetails getOAuthDetails() {
         OAuthDetails response = new OAuthDetails();
-        response.setAccessToken((String) providerResponse.get("access_token"));
-        response.setRefreshToken((String) providerResponse.get("refresh_token"));
-        response.setScope((String) providerResponse.get("scope"));
-        response.setExpiresIn(Integer.parseInt(String.valueOf(providerResponse.get("expires_in"))));
-        response.setTokenType((String) providerResponse.get("token_type"));
-        response.setIdToken((String) providerResponse.get("id_token"));
+        response.setAccessToken((String) completeResponse.get("access_token"));
+        response.setRefreshToken((String) completeResponse.get("refresh_token"));
+        response.setScope((String) completeResponse.get("scope"));
+        response.setExpiresIn(Integer.parseInt(String.valueOf(completeResponse.get("expires_in"))));
+        response.setTokenType((String) completeResponse.get("token_type"));
+        response.setIdToken((String) completeResponse.get("id_token"));
         return response;
     }
 
-    public JSONObject getProviderDetails() {
-        return getDetails("details_provider");
+    public ProviderDetails getProviderDetails() {
+        ProviderDetails pd = new ProviderDetails();
+        pd.setDetails(getDetails("details_provider"));
+        return pd;
     }
 
     public JSONObject getNormalizedDetails() {
@@ -44,15 +46,15 @@ public class LoginbuddyResponse {
     }
 
     public ErrorResponse getError() {
-        if (providerResponse.get("error") != null) {
-            return new ErrorResponse(status, (String) providerResponse.get("error"), (String) providerResponse.get("error_description")
+        if (completeResponse.get("error") != null) {
+            return new ErrorResponse(status, (String) completeResponse.get("error"), (String) completeResponse.get("error_description")
             );
         }
         return null;
     }
 
     private JSONObject getDetails(String details) {
-        return (JSONObject) providerResponse.get(details);
+        return (JSONObject) completeResponse.get(details);
     }
 
     public String getState() {
@@ -65,6 +67,6 @@ public class LoginbuddyResponse {
 
     @Override
     public String toString() {
-        return providerResponse.toJSONString();
+        return completeResponse.toJSONString();
     }
 }

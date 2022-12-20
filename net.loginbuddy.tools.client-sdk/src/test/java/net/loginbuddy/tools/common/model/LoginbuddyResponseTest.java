@@ -63,6 +63,9 @@ public class LoginbuddyResponseTest {
         assertEquals("noncevalue", ld.getNonce());
         assertEquals( 1234567890L, ld.getIat());
 
+        ProviderDetails pd = lr.getProviderDetails();
+        assertEquals("myprovider", pd.getProvider());
+
         JSONObject normalized = lr.getNormalizedDetails();
         assertEquals("mysub", normalized.get("sub"));
         assertEquals("myprovider", normalized.get("provider"));

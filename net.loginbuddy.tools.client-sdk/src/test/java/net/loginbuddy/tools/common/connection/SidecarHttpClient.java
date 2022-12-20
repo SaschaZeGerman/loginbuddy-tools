@@ -39,6 +39,7 @@ public class SidecarHttpClient implements HttpClient {
             StatusLine sl = new BasicStatusLine(httpUriRequest.getProtocolVersion(), 201, null);
             return new SidecarHttpRequest(sl);
         } else {
+            assert httpUriRequest.getURI().getQuery().startsWith("code");
             StatusLine sl = new BasicStatusLine(httpUriRequest.getProtocolVersion(), 200, null);
             return new SidecarHttpResponse(sl);
         }
