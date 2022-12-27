@@ -1,0 +1,37 @@
+{
+  "access_token": "FAKE_31f01303-f931-4218-a98f-eb673b522bee",
+  "details_provider": {
+    "id_token_payload": {
+    },
+    "provider": "server_loginbuddy",
+    "userinfo": {
+      "sub": "asas@asas.com",
+      "email_verified": true,
+      "name": "Login Buddy",
+      "preferred_username": "asas@asas.com",
+      "given_name": "Login",
+      "family_name": "Buddy",
+      "email": "asas@asas.com"
+    }
+  },
+  "scope": "openid profile email",
+  "token_type": "Bearer",
+  "details_loginbuddy": {
+    "aud": "clientIdForTestingPurposes",
+    "iss": "https://latest.loginbuddy.net",
+    "nonce": "2c7964a1-62d2-4fb4-ad3d-dac90b556bec",
+    "iat": 1671424953
+  },
+  "details_normalized": {
+    "sub": "asas@asas.com",
+    "email_verified": "true",
+    "provider": "server_loginbuddy",
+    "name": "Login Buddy",
+    "preferred_username": "asas@asas.com",
+    "given_name": "Login",
+    "family_name": "Buddy",
+    "picture": "",
+    "email": "asas@asas.com"
+  },
+  "expires_in": 3600
+}

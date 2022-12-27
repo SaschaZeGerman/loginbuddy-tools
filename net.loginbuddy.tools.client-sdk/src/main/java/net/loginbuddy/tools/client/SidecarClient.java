@@ -25,7 +25,7 @@ public class SidecarClient {
     private static final Logger LOGGER = Logger.getLogger(String.valueOf(SidecarClient.class));
 
     // http://localhost/?error={error}&error_description={errorDescription}
-    private static Pattern pErrorUrl = Pattern.compile("[?]error=([a-zA-Z0-9-_ ]{0,48})[&]error_description=([a-zA-Z0-9-_ ]{0,128})");
+    private static final Pattern pErrorUrl = Pattern.compile("[?]error=([a-zA-Z0-9-_ ]{0,48})[&]error_description=([a-zA-Z0-9-_ ]{0,128})");
 
     private SidecarClientAuthRequest authRequest;
     private SidecarClientAuthResponse authResponse;
@@ -50,7 +50,7 @@ public class SidecarClient {
     }
 
     /**
-     * This method initiates the process of creating the authorization URL that may be used to redirect a user to its authorization endpoint.
+     * This method creates an authorization request which makes the authorizationUrl for the given provider available.
      *
      * @param provider The provider for which to create the authorization Url. This value must match a 'provider' in Loginbuddy's config.json and must not be null!
      * @return
@@ -75,10 +75,10 @@ public class SidecarClient {
     }
 
     /**
-     * This will return the providers oauth response and details that were added by Loginbuddy.
+     * This method retrieves the authorization response as created by the provider and details added by Loginbuddy.
      *
-     * @return
-     * @throws Exception
+     * @return Loginbuddys response including all provider and Loginbuddy details
+     * @throws Exception if the connection to Loginbuddy failed or Loginbuddy returned a 400 response
      */
     public LoginbuddyResponse getAuthResponse() throws LoginbuddyToolsException {
         HttpGet authResultRequest = new HttpGet(String.format(loginbuddyCallbackUrl, this.authResponse.getQueryString()));
@@ -92,13 +92,11 @@ public class SidecarClient {
         }
     }
 
-
-
     /**
      * After creating a SidecarClientAuthRequest this method returns the authorization URL that can be used to initiate the authorization request with the provider.
-     * A NullPointerException will be thrown if the SidecarClientAuthRequest has not been created.
      *
      * @return The authorization URL
+     * @throws LoginbuddyToolsException If no request had been created or if Loginbuddy could not b reached
      */
     public String getAuthorizationUrl() throws LoginbuddyToolsException {
 
@@ -134,6 +132,10 @@ public class SidecarClient {
         }
     }
 
+    /**
+     * Configure a http client. This, however, is intended for testing purposes and should be ignored otherwise
+     * @param httpClient
+     */
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }

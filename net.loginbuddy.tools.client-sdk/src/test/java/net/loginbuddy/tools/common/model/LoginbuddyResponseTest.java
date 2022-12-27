@@ -1,14 +1,18 @@
 package net.loginbuddy.tools.common.model;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 
+import java.io.FileReader;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class LoginbuddyResponseTest {
 
     @Test
-    public void testCompleteResponse() {
+    public void testCompleteResponseManual() {
 
         JSONObject providerDetailsIdTokenPayload = new JSONObject();
         providerDetailsIdTokenPayload.put("sub", "mysub");
@@ -72,5 +76,53 @@ public class LoginbuddyResponseTest {
 
         assertEquals("teststate", lr.getState());
         assertEquals(200, lr.getStatus());
+    }
+
+    @Test
+    public void testCompleteResponse() {
+        try {
+            LoginbuddyResponse lr = new LoginbuddyResponse("state", 200, (JSONObject)new JSONParser().parse(new FileReader("src/test/resources/testResponse.json")));
+            assertEquals(200, lr.getStatus());
+            assertEquals("state", lr.getState());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testLoginbuddyDetails() {
+        try {
+            LoginbuddyResponse lr = new LoginbuddyResponse("state", 200, (JSONObject)new JSONParser().parse(new FileReader("src/test/resources/testResponse.json")));
+            assertEquals("clientIdForTestingPurposes", lr.getLoginbuddyDetails().getAud());
+            assertEquals("https://latest.loginbuddy.net", lr.getLoginbuddyDetails().getIss());
+            assertEquals("2c7964a1-62d2-4fb4-ad3d-dac90b556bec", lr.getLoginbuddyDetails().getNonce());
+            assertEquals(1671424953, lr.getLoginbuddyDetails().getIat());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testProviderDetails() {
+        try {
+            LoginbuddyResponse lr = new LoginbuddyResponse("state", 200, (JSONObject)new JSONParser().parse(new FileReader("src/test/resources/testResponse.json")));
+            assertEquals("server_loginbuddy", lr.getProviderDetails().getProvider());
+            assertEquals("Login Buddy", ((JSONObject)lr.getProviderDetails().getDetails().get("userinfo")).get("name"));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMinOAuthDetails() {
+        try {
+            LoginbuddyResponse lr = new LoginbuddyResponse("state", 200, (JSONObject)new JSONParser().parse(new FileReader("src/test/resources/testResponseMinOAuth.json")));
+            assertEquals("FAKE_31f01303-f931-4218-a98f-eb673b522bee", lr.getOAuthDetails().getAccessToken());
+            assertEquals("Bearer", lr.getOAuthDetails().getTokenType());
+            assertEquals("openid profile email", lr.getOAuthDetails().getScope());
+            assertEquals(3600, lr.getOAuthDetails().getExpiresIn());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 }

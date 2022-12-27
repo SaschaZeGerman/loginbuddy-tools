@@ -10,7 +10,7 @@ public class SidecarClientAuthResponse {
     private String queryString;
 
     /**
-     * Create a new AuthorizationRequest
+     * Create a new AuthorizationResponse
      *
      * @param client      Must not be null
      * @param queryString Must not be null
@@ -33,6 +33,10 @@ public class SidecarClientAuthResponse {
         this.queryString = queryString;
     }
 
+    /**
+     * Configure a http client. This, however, is intended for testing purposes and should be ignored otherwise
+     * @param httpClient
+     */
     public SidecarClientAuthResponse setHttpClient(HttpClient httpClient) {
         this.client.setHttpClient(httpClient);
         return this;

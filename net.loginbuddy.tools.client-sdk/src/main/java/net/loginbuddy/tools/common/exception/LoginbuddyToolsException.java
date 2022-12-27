@@ -1,16 +1,13 @@
 package net.loginbuddy.tools.common.exception;
 
-import java.util.logging.Logger;
-
 public class LoginbuddyToolsException extends Exception {
 
-    private static final Logger LOGGER = Logger.getLogger(String.valueOf(LoginbuddyToolsException.class));
-
-    private String error, errorDescription;
-    private int httpStatus;
+    private final String error;
+    private final String errorDescription;
+    private final int httpStatus;
 
     public LoginbuddyToolsException(String error, String errorDescription) {
-        this(error, errorDescription, -1);
+        this(error, errorDescription, 400);
     }
 
     public LoginbuddyToolsException(String error, String errorDescription, int httpStatus) {

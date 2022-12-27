@@ -14,6 +14,9 @@ public class LoginbuddyResponse {
         this.completeResponse = completeResponse;
     }
 
+    /**
+     * @return The content of 'details_loginbuddy' of the complete response
+     */
     public LoginbuddyDetails getLoginbuddyDetails() {
         LoginbuddyDetails ld = new LoginbuddyDetails();
         JSONObject jo = getDetails("details_loginbuddy");
@@ -24,6 +27,9 @@ public class LoginbuddyResponse {
         return ld;
     }
 
+    /**
+     * @return The OAuth / OIDC standard values of the complete response
+     */
     public OAuthDetails getOAuthDetails() {
         OAuthDetails response = new OAuthDetails();
         response.setAccessToken((String) completeResponse.get("access_token"));
@@ -35,12 +41,18 @@ public class LoginbuddyResponse {
         return response;
     }
 
+    /**
+     * @return The content of 'details_provider' of the complete response
+     */
     public ProviderDetails getProviderDetails() {
         ProviderDetails pd = new ProviderDetails();
         pd.setDetails(getDetails("details_provider"));
         return pd;
     }
 
+    /**
+     * @return The content of 'details_normalized' of the complete response
+     */
     public JSONObject getNormalizedDetails() {
         return getDetails("details_normalized");
     }

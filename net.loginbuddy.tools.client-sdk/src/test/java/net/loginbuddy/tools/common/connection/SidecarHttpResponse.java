@@ -1,31 +1,19 @@
 package net.loginbuddy.tools.common.connection;
 
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Locale;
 
 public class SidecarHttpResponse extends BasicHttpResponse {
 
-    public SidecarHttpResponse(StatusLine statusline, ReasonPhraseCatalog catalog, Locale locale) {
-        super(statusline, catalog, locale);
-    }
-
     public SidecarHttpResponse(StatusLine statusline) {
         super(statusline);
-    }
-
-    public SidecarHttpResponse(ProtocolVersion ver, int code, String reason) {
-        super(ver, code, reason);
-    }
-
-    @Override
-    public StatusLine getStatusLine() {
-        return super.getStatusLine();
     }
 
     @Override

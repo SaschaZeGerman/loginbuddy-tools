@@ -10,13 +10,13 @@ docker network as *loginbuddy-sidecar*.
 
 ## Initiating the authorization code flow
 
-Assuming there is a web UI that shows a button such as `Login with providerXYZ` and a click on that button calls a HttpServlets GET method.
+Assuming there is a web UI that shows a button such as `Login with providerXYZ` and a click on that button calls a HttpServlets POST method.
 
-The code below is placed in the GET method:
+The code below is placed in the POST method:
 
 - Creating the authorization URL:
   - `...` // request validations are handled here
-  - `String choosenProvider = httpRequest.getParameter("provider");`  // the choosenProvider is also configured in Loginbuddys configuration
+  - `String choosenProvider = httpRequest.getParameter("provider");`  // the choosen provider is also configured in Loginbuddys configuration
   - `String authorizationUrl = SidecarClient.createAuthRequest(choosenProvider).build().getAuthorizationUrl();`  // other parameters can be set before calling *build()*
   - `...` 
 - Redirecting the user to the provider:
@@ -28,23 +28,32 @@ That's it, the user gets redirected to provider 'providerXYZ'.
 
 ## Processing the providers response
 
-The provider responds to the redirect_uri and includes the authorization_code and the state parameter. Or, in case of an error, error and error_description.
+The provider responds to the redirect_uri and includes the authorization_code and the state parameter. Or, in case of a failure, error and error_description.
 
 In either case Loginbuddy handles the response.
 
-Assuming the callback is *https://local.loginbuddy.net/callback*, this is the required implementation in the matching http servlets GET method:
+Assuming the callback is *https://myclient.com/callback*, this is the required implementation in the matching http servlets GET method:
 
 - `...` // request validations are handled here
-- `LoginbuddyResponse authResponse = SidecarClient.getAuthResponse(request.getQueryString());`  // Loginbuddy processes the query string, exchanges a code for an access_token
+- `String queryString = request.getQueryString();`
+- `LoginbuddyResponse loginbuddyResponse = SidecarClient.createAuthResponse(queryString).build().getAuthResponse();`  // Loginbuddy processes the query string, exchanges a code for an access_token
 
-That's it, the object *authResponse* contains everything your client needs! This means, it includes the issued access_token, the expanded content of the validated id_token, 
+That's it, the object *loginbuddyResponse* contains everything your client needs! This means, it includes the issued access_token, the expanded content of the validated id_token, 
 the userinfo response.
 
 LoginbuddyResponse provides these methods:
 
-- `authResponse.getError();`  // if this is not null, an error occured. This should be called first
-- `authResponse.getOAuthResponse();`  // a json object containing: access_token, refresh_token, id_token, scope, token_type, expires_in, all default OAuth/OpenID Connect response values
-- `authResponse.getDetailsProvider();`  // details about the chosen provider, including the /userinfo response and the content of the validated id_token
-- `authResponse.getDetailsLoginbuddy();`  // details about Loginbuddy itself
-- `authResponse.getDetailsNormalized();`  // the most important one, a json object that has the same structure for all providers!
+- `loginbuddyResponse.getError();`  // if this is not null, an error occured. This should be called first
+- `loginbuddyResponse.getOAuthDetails();`  // a json object containing: access_token, refresh_token, id_token, scope, token_type, expires_in, all default OAuth/OpenID Connect response values
+- `loginbuddyResponse.getProviderDetails();`  // details about the chosen provider, including the /userinfo response and the content of the validated id_token
+- `loginbuddyResponse.getLoginbuddyDetails();`  // details about Loginbuddy itself
+- `loginbuddyResponse.getNormalizedDetails();`  // the most important one, a json object that has the same structure for all providers!
+- `loginbuddyResponse.getState()();` // the state that was given to Loginbuddy by your client
+- `loginbuddyResponse.getStatus()();` // the http status response Loginbuddy produced
+- `loginbuddyResponse.toString()();` // overrides toString to return the complete response as string
 
+## Loginbuddy Samples
+
+Checkout the [samples](https://github.com/SaschaZeGerman/loginbuddy-samples) project. The democlient implements the usage of the SDK found in *net.loginbuddy.democlient.sidecar*
+
+For more details please see the [WIKI](https://github.com/SaschaZeGerman/loginbuddy-tools/wiki) of this project!

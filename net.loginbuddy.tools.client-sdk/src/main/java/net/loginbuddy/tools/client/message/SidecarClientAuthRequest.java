@@ -74,10 +74,23 @@ public class SidecarClientAuthRequest {
         return this;
     }
 
+    /**
+     * See {@link #setDynamicProvider(String, String)}
+     *
+     * @param issuer
+     * @return
+     */
     public SidecarClientAuthRequest setDynamicProvider(String issuer) {
         return setDynamicProvider(issuer, null);
     }
 
+    /**
+     * Optional: To use a provider via dynamic registration. Loginbuddy will register itself as a client. The 'provider' will be set automatically
+     *
+     * @param issuer
+     * @param discoveryUrl
+     * @return
+     */
     public SidecarClientAuthRequest setDynamicProvider(String issuer, String discoveryUrl) {
         formParameters.add(new BasicNameValuePair("issuer", issuer));
         if (discoveryUrl != null) {
@@ -158,6 +171,10 @@ public class SidecarClientAuthRequest {
         return this;
     }
 
+    /**
+     * Configure a http client. This, however, is intended for testing purposes and should be ignored otherwise
+     * @param httpClient
+     */
     public SidecarClientAuthRequest setHttpClient(HttpClient httpClient) {
         this.client.setHttpClient(httpClient);
         return this;

@@ -1,0 +1,10 @@
+FROM saschazegerman/loginbuddy-builder:latest
+
+COPY pom.xml /tmp/pom.xml
+COPY net.loginbuddy.tools.client-sdk/ /tmp/net.loginbuddy.tools.client-sdk
+
+RUN mvn -f "/tmp/pom.xml" clean install
+
+RUN rm -rf /tmp/*
+
+CMD [""]
