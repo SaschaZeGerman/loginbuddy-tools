@@ -52,6 +52,45 @@ LoginbuddyResponse provides these methods:
 - `loginbuddyResponse.getStatus()();` // the http status response Loginbuddy produced
 - `loginbuddyResponse.toString()();` // overrides toString to return the complete response as string
 
+## The client-sdk
+
+### Build
+
+To build the client-sdk these technologies and tools are needed:
+
+- java jdk11
+- maven
+- make // this is for your convenience. If not available, its commands can be run manually
+
+Building it is easy:
+
+- `make build_all`
+
+The client-sdk is placed here:
+
+- `net.loginbuddy.tools.client-sdk/target/client-sdk-1.0.0.jar`
+
+and installed into your local maven repository.
+
+### Usage
+
+Include the produced jar-file as a dependency in yor application:
+
+```xml
+        <dependency>
+            <groupId>net.loginbuddy</groupId>
+            <artifactId>client-sdk</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+
+The configuration is done via an environment variable:
+
+- **LOGINBUDDY_SIDECAR_LOCATION**
+  - if it is not set it defaults to *http://loginbuddy-sidecar:8444*
+  - in docker-compose the host name *loginbuddy-sidecar* should be configured as service-name, container_name, hostname
+  - you may also use *https://loginbuddy-sidecar:444* in which case your application has to accept loginbuddy-sidecar's self-signed SSL/TLS certificate
+
 ## Loginbuddy Samples
 
 Checkout the [samples](https://github.com/SaschaZeGerman/loginbuddy-samples) project. The democlient implements the usage of the SDK found in *net.loginbuddy.democlient.sidecar*
