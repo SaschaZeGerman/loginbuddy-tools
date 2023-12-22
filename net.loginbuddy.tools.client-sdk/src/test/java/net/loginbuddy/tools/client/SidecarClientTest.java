@@ -2,6 +2,7 @@ package net.loginbuddy.tools.client;
 
 import net.loginbuddy.tools.client.message.SidecarClientAuthRequest;
 import net.loginbuddy.tools.client.message.SidecarClientAuthResponse;
+import net.loginbuddy.tools.client.message.SidecarClientRefreshTokenRequest;
 import net.loginbuddy.tools.common.connection.SidecarHttpClient;
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
 import net.loginbuddy.tools.common.model.LoginbuddyResponse;
@@ -45,6 +46,32 @@ public class SidecarClientTest {
             assertEquals(200, lr.getStatus());
             assertEquals("FAKE_31f01303-f931-4218-a98f-eb673b522bee", lr.getOAuthDetails().getAccessToken());
             assertEquals(3600, lr.getOAuthDetails().getExpiresIn());
+        } catch (LoginbuddyToolsException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSimulateRefreshToken() {
+        try {
+            SidecarClientRefreshTokenRequest resp = SidecarClient.createRefreshTokenRequest("meRefreshToken").setHttpClient(new SidecarHttpClient(HttpClientBuilder.create().build()));
+            LoginbuddyResponse lr = resp.setScope("a b c").build().getRefreshTokenResponse();
+            assertEquals(200, lr.getStatus());
+            assertEquals("FAKE_31f01303-f931-4218-a98f-eb673b522bee", lr.getOAuthDetails().getAccessToken());
+            assertEquals(3600, lr.getOAuthDetails().getExpiresIn());
+        } catch (LoginbuddyToolsException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSimulateInvalidRefreshToken() {
+        try {
+            SidecarClientRefreshTokenRequest resp = SidecarClient.createRefreshTokenRequest("invalidRefreshToken").setHttpClient(new SidecarHttpClient(HttpClientBuilder.create().build()));
+            LoginbuddyResponse lr = resp.build().getRefreshTokenResponse();
+            assertEquals(400, lr.getStatus());
+            assertEquals("invalid_request", lr.getError().getError());
+            assertEquals("the given refresh_token is invalid", lr.getError().getErrorDescription());
         } catch (LoginbuddyToolsException e) {
             fail(e.getMessage());
         }

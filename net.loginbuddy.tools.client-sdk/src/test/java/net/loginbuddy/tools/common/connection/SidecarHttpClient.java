@@ -7,11 +7,13 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
@@ -38,6 +40,13 @@ public class SidecarHttpClient implements HttpClient {
         if(httpUriRequest.getURI().getPath().endsWith("initialize")) {
             StatusLine sl = new BasicStatusLine(httpUriRequest.getProtocolVersion(), 201, null);
             return new SidecarHttpRequest(sl);
+        } else if(httpUriRequest.getURI().getPath().endsWith("token")) {
+            if(EntityUtils.toString( ((HttpPost) httpUriRequest).getEntity()).contains("invalidRefreshToken")) {
+                StatusLine sl = new BasicStatusLine(httpUriRequest.getProtocolVersion(), 400, null);
+                return new SidecarInvalidRefreshtokenResponse(sl);
+            }
+            StatusLine sl = new BasicStatusLine(httpUriRequest.getProtocolVersion(), 200, null);
+            return new SidecarHttpResponse(sl);
         } else {
             assert httpUriRequest.getURI().getQuery().startsWith("code");
             StatusLine sl = new BasicStatusLine(httpUriRequest.getProtocolVersion(), 200, null);

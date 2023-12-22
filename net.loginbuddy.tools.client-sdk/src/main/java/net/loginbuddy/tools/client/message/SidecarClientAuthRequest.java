@@ -9,7 +9,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SidecarClientAuthRequest {
+public class SidecarClientAuthRequest implements ParameterProvider {
 
     private final SidecarClient client;
 
@@ -36,6 +36,7 @@ public class SidecarClientAuthRequest {
         return client;
     }
 
+    @Override
     public List<NameValuePair> getParameters() {
         return formParameters;
     }
