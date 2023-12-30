@@ -6,13 +6,12 @@ import net.loginbuddy.tools.client.message.SidecarClientAuthResponse;
 import net.loginbuddy.tools.client.message.SidecarClientRefreshTokenRequest;
 import net.loginbuddy.tools.common.exception.LoginbuddyToolsException;
 import net.loginbuddy.tools.common.model.LoginbuddyResponse;
-import net.loginbuddy.tools.common.model.OAuthDetails;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
@@ -35,7 +34,8 @@ public class SidecarClient {
     private SidecarClientAuthRequest authRequest;
     private SidecarClientAuthResponse authResponse;
     private SidecarClientRefreshTokenRequest refreshTokenRequest;
-    private String loginbuddyInitUrl;
+    private String loginbuddySidecarLocation;
+    private String loginbuddyAuthorizePath;
     private String loginbuddyCallbackUrl;
     private String loginbuddyTokenEndpoint;
 
@@ -43,16 +43,16 @@ public class SidecarClient {
 
     private SidecarClient() {
         try {
-            String loginbuddylocation = System.getenv("LOGINBUDDY_SIDECAR_LOCATION");
-            if (loginbuddylocation == null) {
+            loginbuddySidecarLocation = System.getenv("LOGINBUDDY_SIDECAR_LOCATION");
+            if (loginbuddySidecarLocation == null) {
                 LOGGER.info("Environment variable LOGINBUDDY_SIDECAR_LOCATION was not set, using default location: http://loginbuddy-sidecar:8044");
-                loginbuddylocation = "http://loginbuddy-sidecar:8044";
+                loginbuddySidecarLocation = "http://loginbuddy-sidecar:8044";
             }
-            loginbuddyInitUrl = loginbuddylocation.concat("/sidecar/initialize");
-            loginbuddyCallbackUrl = loginbuddylocation.concat("/sidecar/callback?%s");
-            loginbuddyTokenEndpoint = loginbuddylocation.concat("/sidecar/token");
-            LOGGER.info(String.format("ClientSDK connects to this location: %s", loginbuddylocation));
-        } catch(RuntimeException e) {
+            loginbuddyAuthorizePath = "/sidecar/initialize";
+            loginbuddyCallbackUrl = loginbuddySidecarLocation.concat("/sidecar/callback?%s");
+            loginbuddyTokenEndpoint = loginbuddySidecarLocation.concat("/sidecar/token");
+            LOGGER.info(String.format("ClientSDK connects to this location: %s", loginbuddySidecarLocation));
+        } catch (RuntimeException e) {
             LOGGER.severe(String.format("Environment variable LOGINBUDDY_SIDECAR_LOCATION is not accessible, clientSDK is not usable: %s", e.getMessage()));
         }
     }
@@ -94,6 +94,10 @@ public class SidecarClient {
         return client.refreshTokenRequest;
     }
 
+    public final String getLoginbuddyAuthorizePath() {
+        return loginbuddyAuthorizePath;
+    }
+
     /**
      * This method retrieves the authorization response as created by the provider and details added by Loginbuddy.
      *
@@ -118,7 +122,7 @@ public class SidecarClient {
     public String getAuthorizationUrl() throws LoginbuddyToolsException {
 
         // initialize the authorization flow. Loginbuddy will return the authorizationUrl that is valid for the selected provider
-        HttpResponse initAuthResponse = doPost(loginbuddyInitUrl, authRequest);
+        HttpResponse initAuthResponse = doPost(authRequest);
 
         if (initAuthResponse.getStatusLine().getStatusCode() == 201) {
             // the location header contains the authorizationUrl for taking a browser to the target provider
@@ -131,7 +135,7 @@ public class SidecarClient {
             String errorUrl = URLDecoder.decode(initAuthResponse.getHeaders("Location")[0].getValue(), StandardCharsets.UTF_8);
             Matcher mErrorUrl = pErrorUrl.matcher(errorUrl);
             int httpStatus = initAuthResponse.getStatusLine().getStatusCode();
-            if(mErrorUrl.find()) {
+            if (mErrorUrl.find()) {
                 throw new LoginbuddyToolsException(mErrorUrl.group(1), mErrorUrl.group(2), httpStatus);
             }
             LOGGER.warning(errorUrl);
@@ -150,9 +154,9 @@ public class SidecarClient {
         return getLoginbuddyResponse(initAuthResponse);
     }
 
-    private HttpResponse doPost(String targetUrl, ParameterProvider parameterProvider) throws LoginbuddyToolsException {
+    private HttpResponse doPost(String targetPath, ParameterProvider parameterProvider) throws LoginbuddyToolsException {
         try {
-            HttpPost postRequest = new HttpPost(targetUrl);
+            HttpPost postRequest = new HttpPost(loginbuddySidecarLocation.concat(targetPath));
             postRequest.setEntity(new UrlEncodedFormEntity(parameterProvider.getParameters()));
             return getHttpClient().execute(postRequest);
         } catch (Exception e) {
@@ -161,17 +165,30 @@ public class SidecarClient {
         }
     }
 
+    /**
+     *
+     * @param parameterProvider MUST contain the key 'target_path'
+     * @return
+     * @throws LoginbuddyToolsException
+     */
+    private HttpResponse doPost(ParameterProvider parameterProvider) throws LoginbuddyToolsException {
+        NameValuePair nvpTargetPath = parameterProvider.getParameters().stream().filter(t -> t.getName().equals("target_path")).findFirst().orElse(null);
+        parameterProvider.getParameters().remove(nvpTargetPath);
+        return doPost(nvpTargetPath.getValue(), parameterProvider);
+    }
+
     private LoginbuddyResponse getLoginbuddyResponse(HttpResponse httpResponse) throws LoginbuddyToolsException {
         try {
             String authResponseString = EntityUtils.toString(httpResponse.getEntity());
             return new LoginbuddyResponse(httpResponse.getFirstHeader("X-State").getValue(), httpResponse.getStatusLine().getStatusCode(), (JSONObject) new JSONParser().parse(authResponseString));
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new LoginbuddyToolsException("auth_response_error", e.getMessage(), httpResponse == null ? 400 : httpResponse.getStatusLine().getStatusCode());
         }
     }
 
     /**
      * Configure a http client. This, however, is intended for testing purposes and should be ignored otherwise
+     *
      * @param httpClient
      */
     public void setHttpClient(HttpClient httpClient) {

@@ -6,14 +6,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SidecarClientAuthRequest implements ParameterProvider {
 
     private final SidecarClient client;
 
-    private final List<NameValuePair> formParameters;
+    private final Map<String, BasicNameValuePair> formParameters;
 
     /**
      * Create a new AuthorizationRequest
@@ -23,8 +22,9 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      */
     public SidecarClientAuthRequest(SidecarClient client, String provider) {
         this.client = client;
-        formParameters = new ArrayList<>();
-        formParameters.add(new BasicNameValuePair("provider", provider));
+        formParameters = new HashMap<>();
+        formParameters.put("provider", new BasicNameValuePair("provider", provider));
+        formParameters.put("target_path", new BasicNameValuePair("target_path", client.getLoginbuddyAuthorizePath()));
     }
 
     /**
@@ -38,7 +38,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
 
     @Override
     public List<NameValuePair> getParameters() {
-        return formParameters;
+        return new ArrayList<>(formParameters.values());
     }
 
     /**
@@ -48,7 +48,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setState(String state) {
-        formParameters.add(new BasicNameValuePair("state", state));
+        formParameters.put("state", new BasicNameValuePair("state", state));
         return this;
     }
 
@@ -60,7 +60,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setScope(String scope) {
-        formParameters.add(new BasicNameValuePair("scope", scope));
+        formParameters.put("scope", new BasicNameValuePair("scope", scope));
         return this;
     }
 
@@ -71,7 +71,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setNonce(String nonce) {
-        formParameters.add(new BasicNameValuePair("nonce", nonce));
+        formParameters.put("nonce", new BasicNameValuePair("nonce", nonce));
         return this;
     }
 
@@ -93,12 +93,12 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setDynamicProvider(String issuer, String discoveryUrl) {
-        formParameters.add(new BasicNameValuePair("issuer", issuer));
+        formParameters.put("issuer", new BasicNameValuePair("issuer", issuer));
         if (discoveryUrl != null) {
-            formParameters.add(new BasicNameValuePair("discovery_url", discoveryUrl));
+            formParameters.put("discovery_url", new BasicNameValuePair("discovery_url", discoveryUrl));
         }
-        formParameters.add(new BasicNameValuePair("provider", "")); // needs to be empty to enable dynamic registration
-        formParameters.add(new BasicNameValuePair("accept_dynamic_provider", "true"));
+        formParameters.put("provider", new BasicNameValuePair("provider", "")); // needs to be empty to enable dynamic registration
+        formParameters.put("accept_dynamic_provider", new BasicNameValuePair("accept_dynamic_provider", "true"));
         return this;
     }
 
@@ -110,7 +110,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setPrompt(Prompt prompt) {
-        formParameters.add(new BasicNameValuePair("prompt", prompt.toString()));
+        formParameters.put("prompt", new BasicNameValuePair("prompt", prompt.toString()));
         return this;
     }
 
@@ -123,7 +123,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setLoginHint(String loginHint) {
-        formParameters.add(new BasicNameValuePair("login_hint", loginHint));
+        formParameters.put("login_hint", new BasicNameValuePair("login_hint", loginHint));
         return this;
     }
 
@@ -135,7 +135,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setIdTokenHint(String idTokenHint) {
-        formParameters.add(new BasicNameValuePair("id_token_hint", idTokenHint));
+        formParameters.put("id_token_hint", new BasicNameValuePair("id_token_hint", idTokenHint));
         return this;
     }
 
@@ -146,7 +146,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setSignedResponseAlgRS256() {
-        formParameters.add(new BasicNameValuePair("signed_response_alg", "RS256"));
+        formParameters.put("signed_response_alg", new BasicNameValuePair("signed_response_alg", "RS256"));
         return this;
     }
 
@@ -157,7 +157,30 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setSignedResponseAlgES256() {
-        formParameters.add(new BasicNameValuePair("signed_response_alg", "ES256"));
+        formParameters.put("signed_response_alg", new BasicNameValuePair("signed_response_alg", "ES256"));
+        return this;
+    }
+
+    /**
+     * Overrides the default URLs that point to Loginbuddy
+     * @param path Setting the target, i.e.: .../authorize
+     * @return
+     */
+    public SidecarClientAuthRequest setTargetPath(String path) {
+        formParameters.put("target_path", new BasicNameValuePair("target_path", path));
+        return this;
+    }
+
+    public SidecarClientAuthRequest setClientId(String clientId) {
+        formParameters.put("client_id", new BasicNameValuePair("client_id", clientId));
+        return this;
+    }
+    public SidecarClientAuthRequest setClientSecret(String clientSecret) {
+        formParameters.put("client_secret", new BasicNameValuePair("client_secret", clientSecret));
+        return this;
+    }
+    public SidecarClientAuthRequest setResponseType(String responseType) {
+        formParameters.put("response_type", new BasicNameValuePair("response_type", responseType));
         return this;
     }
 
@@ -168,7 +191,7 @@ public class SidecarClientAuthRequest implements ParameterProvider {
      * @return
      */
     public SidecarClientAuthRequest setObfuscateToken() {
-        formParameters.add(new BasicNameValuePair("obfuscate_token", "true"));
+        formParameters.put("obfuscate_token", new BasicNameValuePair("obfuscate_token", "true"));
         return this;
     }
 
