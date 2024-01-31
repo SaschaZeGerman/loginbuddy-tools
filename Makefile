@@ -9,7 +9,7 @@ endef
 build_all:
 	mvn clean install
 
-# Compile the code and build docker images using the builder image
+# Compile the code using the builder image
 # Use this target if you do not have Java and Maven installed
 # Run the target 'build_all_non_dev' of the repository 'loginbuddy' before running this target
 # https://github.com/SaschaZeGerman/loginbuddy
