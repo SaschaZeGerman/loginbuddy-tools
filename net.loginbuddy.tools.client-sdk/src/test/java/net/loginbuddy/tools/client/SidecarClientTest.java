@@ -22,7 +22,6 @@ public class SidecarClientTest {
             scar.build().getAuthorizationUrl();
             fail("No connection to loginbuddy-sidecar, should fail");
         } catch (LoginbuddyToolsException e) {
-            System.out.println("SASCHA" + e.getMessage());
             assertEquals("connection_failed", e.getError());
             assertTrue(e.getErrorDescription().contains("Connection refused"));
             assertEquals(400, e.getHttpStatus());
