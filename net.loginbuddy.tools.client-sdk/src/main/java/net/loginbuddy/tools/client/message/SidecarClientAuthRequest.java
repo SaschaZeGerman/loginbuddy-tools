@@ -140,6 +140,18 @@ public class SidecarClientAuthRequest implements ParameterProvider {
     }
 
     /**
+     * This value will be forwarded to the given provider as is. This parameter is taken out of RFC 9396 (RAR).
+     * Loginbuddy will not include this parameter if it is not set.
+     *
+     * @param authorizationDetails This should be a JSON array representing an authorization details type that is supported at the target provider
+     * @return
+     */
+    public SidecarClientAuthRequest setAuthorizationDetails(String authorizationDetails) {
+        formParameters.put("authorization_details", new BasicNameValuePair("authorization_details", authorizationDetails));
+        return this;
+    }
+
+    /**
      * If set your client receives a JWT (signed by loginbuddy-sidecar) as response instead of a JSON document.
      * The JWT will be signed using alg=RS256.
      *
